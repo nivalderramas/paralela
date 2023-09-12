@@ -9,14 +9,14 @@ int NUM_THREADS;
 void sum() {
   int id = omp_get_thread_num();
   int block = N / NUM_THREADS;
-  double partialSum = 0;
+  //double partialSum = 0;
   for (int i = id * block; i < (id + 1) * block; i++) {
     if (i & 1)
-      partialSum -= 1.0 / ((2 * i) + 1);
+      sums[id] -= 1.0 / ((2 * i) + 1);
     else
-      partialSum += 1.0 / ((2 * i) + 1);
+      sums[id] += 1.0 / ((2 * i) + 1);
   }
-  sums[id] = partialSum;
+  // sums[id] = partialSum;
 }
 
 int main(int argc, char *argv[]) {
