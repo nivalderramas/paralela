@@ -3,17 +3,21 @@
 #include <stdlib.h>
 #include <time.h>
 
-void printArray(const double *array, int n) {
-    for (int i = 0; i < n*n; i++) {
-        printf("%f ", array[i]);
-        if ((i + 1) % n == 0) {
-            printf("\n");
-        }
+void printArray(const double *array, int n)
+{
+  for (int i = 0; i < n * n; i++)
+  {
+    printf("%f ", array[i]);
+    if ((i + 1) % n == 0)
+    {
+      printf("\n");
     }
-    printf("\n");
+  }
+  printf("\n");
 }
 
-int main() {
+int main()
+{
   omp_set_num_threads(8);
   int n = 2;
   // Seed for random number
@@ -29,16 +33,18 @@ int main() {
   //   A[i] = rand() % 3 + 1;
   //   B[i] = rand() % 3 + 1;
   // }
-  for(int i = 0; i<n*n; i++){
-    scanf("%lf",&A[i]);
+  for (int i = 0; i < n * n; i++)
+  {
+    scanf("%lf", &A[i]);
   }
-  for(int i = 0; i<n*n; i++){
-    scanf("%lf",&B[i]);
+  for (int i = 0; i < n * n; i++)
+  {
+    scanf("%lf", &B[i]);
   }
 
-
-  #pragma omp parallel for
-  for (int i = 0; i < n * n; i++) {
+#pragma omp parallel for
+  for (int i = 0; i < n * n; i++)
+  {
     int row = i / n;
     int col = i % n;
     int idxA = row * n;
@@ -46,16 +52,25 @@ int main() {
     double sum = 0;
     int id = omp_get_thread_num();
     // printf("id num %d process index %d \n",id,i);
-    for (int j = 0; j < n; j++) {
+    for (int j = 0; j < n; j++)
+    {
       sum += A[idxA + j] * B[idxB + j];
     }
     AB[i] = sum;
   }
 
-
-  printArray(A, n);
-  printArray(B, n);
-  printArray(AB, n);
+  // printArray(A, n);
+  // printArray(B, n);
+  // printArray(AB, n);
+  // Imprime la matriz resultante
+  for (int i = 0; i < n; i++)
+  {
+    for (int j = 0; j < n; j++)
+    {
+      printf("%lf ", AB[i * n + j]);
+    }
+    printf("\n");
+  }
 
   free(A);
   free(B);
