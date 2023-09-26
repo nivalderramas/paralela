@@ -13,15 +13,23 @@ void printArray(const double *array, int n) {
   printf("\n");
 }
 
-int main() {
-  omp_set_num_threads(8);
-  freopen("result.txt", "w", stdout);
-  int n = 2;
+// ./bin threads and n
+int main(int argc, char *argv[]) {
+  if (argc != 3) {
+    printf("Usage: %s num_threads n\n", argv[0]);
+    return 1;
+  }
+
+  int num_threads = atoi(argv[1]);
+  int n = atoi(argv[2]);
+
+  omp_set_num_threads(num_threads);
   // Seed for random number
   srand(time(NULL));
+
+
   // Declare (plain) matrices
   double *A = (double *)malloc(n * n * sizeof(double));
-  // TODO we're assuming that B is already transposed
   double *B = (double *)malloc(n * n * sizeof(double));
   double *AB = (double *)malloc(n * n * sizeof(double));
 
