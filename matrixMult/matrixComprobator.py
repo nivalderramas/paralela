@@ -2,7 +2,7 @@ import subprocess
 import numpy as np
 
 # Tamaño de las matrices
-n = 2
+n = 8
 
 # Crear matrices aleatorias en Python entre 1 y 5 (con decimales)
 A = np.random.randint(1, 6, size=(n, n))
@@ -39,14 +39,14 @@ else:
 
     # Calcular la multiplicación de matrices en Python
     expected_result = np.dot(A, B)
-    # print("Matriz A:")
-    # print(A)
-    # print("Matriz B:")
-    # print(B)
-    # print("Matriz C:")
-    # print(C)
-    # print("Matriz esperada:")
-    # print(expected_result)
+    print("Matriz A:")
+    print(A)
+    print("Matriz B:")
+    print(B)
+    print("Matriz C:")
+    print(C)
+    print("Matriz esperada:")
+    print(expected_result)
 
     # Verificar si las matrices son iguales dentro de una pequeña tolerancia
     tolerance = 1e-6
