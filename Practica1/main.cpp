@@ -11,13 +11,12 @@
 using namespace std;
 
 int main() {
-    cv::VideoCapture cap("video.mp4"); // Reemplaza "nombre_del_video.mp4" por la ruta de tu archivo de video.
+    cv::VideoCapture cap("video.mp4");
     
     if (!cap.isOpened()) {
         cerr << "Error al abrir el video." << endl;
         return -1;
     }
-    // i need to sabe all the frames in a vector
 
 
     cv::Mat frame;
@@ -35,6 +34,8 @@ int main() {
     }
 
     cout << "Se han leido " << frames.size() << " frames." << endl;
+
+
 
     cap.release();
     cv::destroyAllWindows();
