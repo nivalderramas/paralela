@@ -1,0 +1,1 @@
+sudo pacman -S opencv vtk hdf5 glew fmt
