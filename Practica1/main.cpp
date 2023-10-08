@@ -3,37 +3,42 @@
 #include <vector>
 
 using namespace std;
+using namespace cv;
 
-int main() {
-    cv::VideoCapture cap("video.mp4");
+int main()
+{
+    VideoCapture cap("video.mp4");
 
-    if (!cap.isOpened()) {
+    if (!cap.isOpened())
+    {
         cerr << "Error" << endl;
         return -1;
     }
 
-    int frameWidth = cap.get(cv::CAP_PROP_FRAME_WIDTH);
-    int frameHeight = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
-    int fps = cap.get(cv::CAP_PROP_FPS);
+    int frameWidth = cap.get(CAP_PROP_FRAME_WIDTH);
+    int frameHeight = cap.get(CAP_PROP_FRAME_HEIGHT);
+    int fps = cap.get(CAP_PROP_FPS);
 
-    cv::VideoWriter outputVideo("nuevo_video.mp4", cv::VideoWriter::fourcc('H', '2', '6', '4'), fps, cv::Size(frameWidth, frameHeight), true);
+    int newWidth = 640;
+    int newHeight = 360;
 
+    VideoWriter outputVideo("nuevo_video.mp4", VideoWriter::fourcc('H', '2', '6', '4'), fps, Size(newWidth, newHeight));
 
-    if (!outputVideo.isOpened()) {
+    if (!outputVideo.isOpened())
+    {
         cerr << "Error" << endl;
         return -1;
     }
+    
+    while (1)
+    {
+        Mat frame;
+        cap >> frame;
+        if (frame.empty())
+            break;
 
-    vector<cv::Mat> frames;
-    cv::Mat frame;
+        resize(frame, frame, Size(newWidth, newHeight));
 
-    while (cap.read(frame)) {
-        frames.push_back(frame);
-    }
-
-    // cout << "Se han leído " << frames.size() << " fotogramas." << endl;
-
-    for (const cv::Mat& frame : frames) {
         outputVideo.write(frame);
     }
 
@@ -41,7 +46,7 @@ int main() {
 
     cap.release();
     outputVideo.release();
-    cv::destroyAllWindows();
+    destroyAllWindows();
 
     return 0;
 }
