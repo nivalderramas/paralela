@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.csv": "csv",
+        "__mutex_base": "cpp"
+    }
+}
