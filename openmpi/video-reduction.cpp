@@ -49,6 +49,7 @@ int main(int argc, char **argv) {
   int i = startFrame;
   // Main loop for processing frames
   vector<cv::Mat> newFrames;
+  vector<cv::Mat> allFrames;
   while (true) {
     cv::Mat frame;
     cap >> frame;
@@ -94,6 +95,18 @@ int main(int argc, char **argv) {
     }
 
     newFrames.push_back(smallFrame);
+    vector<uchar> serializedFrame = serializeMat(smallFrame);
+    if (rank != root) {
+      MPI_Send(serializedFrame.data(), serializedFrame.size(),
+               MPI_UNSIGNED_CHAR, root, 0, MPI_COMM_WORLD);
+    } else {
+      vector<uchar> recFrame(serializedFrame.size());
+      MPI_Sendrecv(serializedFrame.data(), serializedFrame.size(),
+                   MPI_UNSIGNED_CHAR, root, 0, recFrame.data(), recFrame.size(),
+                   MPI_UNSIGNED_CHAR, root, 0, MPI_COMM_WORLD, &status);
+      cv::Mat deserializedFrame = deserializeMat(recFrame);
+      allFrames.push_back(deserializedFrame);
+    }
 
     i++;
     if (i == totalFrames / numProcesses * (rank + 1)) {
@@ -101,31 +114,7 @@ int main(int argc, char **argv) {
     }
   }
 
-  // Gather serialized frames at the root process
-  std::vector<std::vector<uchar>> serializedFrames(newFrames.size());
   if (rank == root) {
-    serializedFrames.resize(totalFrames);
-  }
-
-  // Serialize frames
-  for (size_t j = 0; j < newFrames.size(); ++j) {
-    serializedFrames[j] = serializeMat(newFrames[j]);
-  }
-
-  // Gather serialized frames at the root process
-  MPI_Gather(serializedFrames.data(),
-             newFrames.size() * serializedFrames[0].size(), MPI_UNSIGNED_CHAR,
-             serializedFrames.data(),
-             newFrames.size() * serializedFrames[0].size(), MPI_UNSIGNED_CHAR,
-             root, MPI_COMM_WORLD);
-
-  if (rank == root) {
-    // Deserialize received frames and create the final video
-    std::vector<cv::Mat> allFrames;
-    for (const auto &serializedFrame : serializedFrames) {
-      allFrames.push_back(deserializeMat(serializedFrame));
-    }
-
     // Create the final video using all received frames
     cv::VideoWriter videoWriter("output_video.mp4",
                                 cv::VideoWriter::fourcc('X', '2', '6', '4'),
