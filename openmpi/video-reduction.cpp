@@ -115,7 +115,7 @@ int main(int argc, char** argv){
     
     // Gather serialized frames at the root process
     MPI_Gather(serializedFrames.data(), newFrames.size() * serializedFrames[0].size(), MPI_UNSIGNED_CHAR,
-               serializedFrames.data() + startFrame , newFrames.size() * serializedFrames[0].size(), MPI_UNSIGNED_CHAR, root, MPI_COMM_WORLD);
+           serializedFrames.data() + startFrame * serializedFrames[0].size(), newFrames.size() * serializedFrames[0].size(), MPI_UNSIGNED_CHAR, root, MPI_COMM_WORLD);
 
     if (rank == root) {
         // Deserialize received frames and create the final video
